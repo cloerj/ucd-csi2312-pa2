@@ -1,67 +1,78 @@
 //
-// Cluster Header provided to us by Professor Ivo
+//John-Marc Cloer
 //
 
-#ifndef CLUSTERING_CLUSTER_H
-#define CLUSTERING_CLUSTER_H
+#ifndef PA2_CLUSTER_H
+#define PA2_CLUSTER_H
 
 #include "Point.h"
 
-namespace Clustering {
-
+namespace Clustering
+{
+    // Creates a type that points to a point
     typedef Point *PointPtr;
     typedef struct LNode *LNodePtr;
 
-//    struct LNode;
-//    typedef LNode *LNodePtr;
-
-    struct LNode {
+    // Node for Linked List
+    struct LNode
+    {
         PointPtr p;
         LNodePtr next;
     };
 
     class Cluster {
-        int size;
-        LNodePtr points;
+
+    private:
+        int size;           // Size of the Cluster
+        LNodePtr head;      // Pointer to the Linked List Head node
 
     public:
-        Cluster() : size(0), points(nullptr) {};
+        // Default Constructor
+        Cluster();
 
-        // The big three: cpy ctor, overloaded operator=, dtor
-        Cluster(const Cluster &);
-        Cluster &operator=(const Cluster &);
-        ~Cluster();
+        // Overload Big Three:
+        Cluster(const Cluster &);                   //Copy Constructor
+        Cluster &operator=(const Cluster &);        //Overloaded Assignment Operator
+        ~Cluster();                                 //Destructor
 
-        // Set functions: They allow calling c1.add(c2.remove(p));
-        void add(const PointPtr &);
-        const PointPtr &remove(const PointPtr &);
+        // Set functions
+        void add(const PointPtr &);                 //Adder
+        const PointPtr &remove(const PointPtr &);   //Remover
 
-        // Overloaded operators
+        //Get Functions
+        int getSize() const {return size;};         //Get Size
+        LNodePtr getHead() const {return head;};    //Get Head
+
+
+        //Overloaded Operators
 
         // IO
+        // - Friends
         friend std::ostream &operator<<(std::ostream &, const Cluster &);
-        friend std::istream &operator>>(std::istream &, Cluster &);
+        friend std::istream &operator>>(std::istream &, Cluster& );
 
         // Set-preserving operators (do not duplicate points in the space)
         // - Friends
         friend bool operator==(const Cluster &lhs, const Cluster &rhs);
 
         // - Members
-        Cluster &operator+=(const Cluster &rhs); // union
-        Cluster &operator-=(const Cluster &rhs); // (asymmetric) difference
-
-        Cluster &operator+=(const Point &rhs); // add point
-        Cluster &operator-=(const Point &rhs); // remove point
+        Cluster &operator+=(const Point &rhs); // allocate point
+        Cluster &operator-=(const Point &rhs); // delete point(s) (greedy)
 
         // Set-destructive operators (duplicate points in the space)
+
         // - Friends
         friend const Cluster operator+(const Cluster &lhs, const Cluster &rhs);
         friend const Cluster operator-(const Cluster &lhs, const Cluster &rhs);
 
-        friend const Cluster operator+(const Cluster &lhs, const PointPtr &rhs);
-        friend const Cluster operator-(const Cluster &lhs, const PointPtr &rhs);
+        friend const Cluster operator+(const Cluster &cluster, const PointPtr &ptr);
+        friend const Cluster operator-(const Cluster &cluster, const PointPtr &ptr);
 
+        // - Members
+        Cluster &operator+=(const Cluster &rhs); // union
+        Cluster &operator-=(const Cluster &rhs); // (asymmetric) difference
     };
-
 }
-#endif //CLUSTERING_CLUSTER_H
+
+
+#endif //PA2_CLUSTER_H
