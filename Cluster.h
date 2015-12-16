@@ -13,18 +13,18 @@ namespace Clustering
     typedef Point *PointPtr;
     typedef struct LNode *LNodePtr;
 
-    // Node for Linked List
+    // Node for a singly-linked List
     struct LNode
     {
-        PointPtr p;
-        LNodePtr next;
+        PointPtr p;             //This is to be the m_Head according to the instructions
+        LNodePtr next;     //Used next becaus that's what we did in data structures
     };
 
     class Cluster {
 
     private:
-        int size;           // Size of the Cluster
-        LNodePtr head;      // Pointer to the Linked List Head node
+        int size;                // Size of the Cluster
+        LNodePtr m_Head;      // Pointer to the Linked List m_Head node
 
     public:
         // Default Constructor
@@ -41,7 +41,7 @@ namespace Clustering
 
         //Get Functions
         int getSize() const {return size;};         //Get Size
-        LNodePtr getHead() const {return head;};    //Get Head
+        LNodePtr getm_Head() const {return m_Head;};    //Get m_Head
 
 
         //Overloaded Operators
