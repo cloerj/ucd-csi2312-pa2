@@ -16,7 +16,6 @@ namespace Clustering {
         double *values;         // values of the point's dimensions
 
     public:
-        // Constructors
         Point(int);
         Point(int, double *);
 
@@ -26,13 +25,15 @@ namespace Clustering {
         ~Point();                               //Destructor
 
         // Accessors & Mutators
+        void pointToConsole();
         int getDims() const { return dim; }
         void setValue(int, double);
         double getValue(int) const;
-        void printPoint();
 
         // Functions
         double distanceTo(const Point &) const;
+
+        // Overloaded operators
 
         //Members
         Point &operator*=(double);
@@ -40,10 +41,10 @@ namespace Clustering {
         const Point operator*(double) const;
         const Point operator/(double) const;
 
-        //1-based index
+        //1-based index!
         double& operator[](int index);
 
-        // Overloaded operators
+        // Friends
         friend Point &operator+=(Point &, const Point &);
         friend Point &operator-=(Point &, const Point &);
         friend const Point operator+(const Point &, const Point &);
