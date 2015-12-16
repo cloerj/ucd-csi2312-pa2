@@ -1,64 +1,305 @@
 //
-// Edited by John-Marc Cloer
+// John-Marc Cloer
 //
 
+#include <iostream>
+#include <math.h>
+
 #include "Point.h"
-#include <cmath>
+
+using namespace std;
+
+namespace Clustering {
+    //Default Constructor
+    Point::Point(int newDims)          //Can't use the dim variable because it throws an error
+    {
+        dim = newDims;
+        values = new double[newDims];
+
+        for (int i = 0; i < newDims; i++) {
+            values[i] = 0;
+        }
+    }
+
+    //Constructor
+    Point::Point(int newDims, double *array) {
+        //Does the same thing as the default
+    }
+
+    // Copy Constructor
+    Point::Point(const Point &newDims) {
+        dim = newDims.getDims();
+        values = new double[newDims.getDims()];
+        for (int i = 0; i < newDims.getDims(); i++) {
+            values[i] = newDims.getValue(i);
+        }
+    }
+
+    // Overloaded assignment operator
+    Point &Point::operator=(const Point &point) {
+        if (this == &point) {
+            return *this;
+        }
+        if (values != NULL) {
+            delete[] values;
+        }
+        else {
+            dim = point.getDims();
+            double *newArray = new double[point.getDims()];
+            for (int i = 0; i < point.getDims(); i++) {
+                newArray[i] = point.getValue(i);
+            }
+            values = newArray;
+        }
+    }
+
+    // Destructor
+    Point::~Point() {
+        delete[] values;
+    };
+
+    // Accessors & Mutators
+    void Point::pointToConsole()
+    {
+        while (dim != 0)
+        {
+            if (dim == 1)
+            {
+                cout << "[" << values[dim - 1] << "]";
+                return;
+            }
+            if (dim != 1)
+            {
+                for (int i = 0; ++i < dim; i++)
+                {
+                    cout << values[i];
+                }
+            }
+        }
+    }
+
+    void Point::setValue(int i, double value)
+    {
+        values[i] = value;
+    }
+
+    // getValue Function
+    double Point::getValue(int i) const
+    {
+        return values[i];
+    }
 
 
-// Default constructor
-// Initializes the point to (0.0, 0.0, 0.0)
-Point::Point() {
-    x = 0.0;
-    y = 0.0;
-    z = 0.0;                                                    // Initialized Point z to 0.0 (Instruction 2)
-}
+    //Functions
 
-// Constructor
-// Initializes the point to (initX, initY, initZ)
-Point::Point(double initX, double initY, double initZ) {
-    x = initX;
-    y = initY;
-    z = initZ;                                                 // Initialized Point Z to initZ (Instruction 2)
-}
+    // distanceTo Function
+    double Point::distanceTo(const Point &comparedPoint) const {
+        double distanceTo;
+        distanceTo = 1;
 
-// Destructor
-// No dynamic allocation, so nothing to do; if omitted, generated automatically
-Point::~Point() {
-    // no-op
-}
+        for (int i = 0; i < dim; i++) {
+            distanceTo = comparedPoint.getValue(i) - values[i];
+            return distanceTo;
+        }
+        return sqrt(distanceTo);
+    }
 
-// Mutator methods
-// Change the values of private member variables
+    // Members
+    // Multiplication assignment operator
+    Point &Point::operator*=(double prod)
+    {
+        for (int i = 0; i < getDims(); i++)
+        {
+            setValue(i, (getValue(i) * prod));
+        }
+        return *this;
+    }
 
-void Point::setX(double newX) {
-    x = newX;
-}
+    // Division assignment operator
+    Point &Point::operator/=(double num)
+    {
+        for (int i = 0; i < getDims(); i++)
+        {
+            setValue(i, (getValue(i) / num));
+        }
+        return *this;
+    }
 
-void Point::setY(double newY) {
-    y = newY;
-}
+    // Multiplication operator
+    const Point Point::operator*(double prod) const
+    {
+        Point multi(dim);
 
-void Point::setZ(double newZ) {                                 // Added a mutator to change the value of z (Instruction 2)
-    z = newZ;
-}
+        for (int i = 0; i < dim; i++)
+        {
+            multi.setValue(i, (values[i] * prod));
+        }
 
+        return multi;
+    }
 
-// Accessors
-// Return the current values of private member variables
+    // Division operator
+    const Point Point::operator/(double quo) const
+    {
+        Point div(dim);
 
-double Point::getX() {
-    return x;
-}
+        for (int i = 0; i < dim; i++)
+        {
+            div.setValue(i, (values[i] / quo));
+        }
+        return div;
+    }
 
-double Point::getY() {
-    return y;
-}
+    double &Point::operator[](int i)
+    {
+        return values[i];
+    }
 
-double Point::getZ() {                                          // Added an accessor to return the current value of z (Instruction 2)
-    return z;
-}
+    // Equality Operator
+    bool operator==(const Point &lhs, const Point &rhs)
+    {
+        if (lhs.getDims() == rhs.getDims())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
-double Point::distanceTo(Point &a) {                            // This function calculates the distance between points (Instruction 3)
-    return sqrt(pow(a.getX()-x, 2) + pow(a.getY()-y, 2) + pow(a.getZ()-z, 2));
+    // Inequality Operator
+    bool operator!=(const Point &lhs, const Point &rhs)
+    {
+        if (lhs.getDims() == rhs.getDims())
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    // Less Than operator
+    bool operator<(const Point &lhs, const Point &rhs)
+    {
+        if (lhs.getDims() < rhs.getDims())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // Greater Than Operator
+    bool operator>(const Point &lhs, const Point &rhs)
+    {
+        if (lhs.getDims() > rhs.getDims())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // Less than or equal to operator
+    bool operator<=(const Point &lhs, const Point &rhs)
+    {
+        if (lhs.getDims() < rhs.getDims())
+        {
+            return true;
+        }
+        else if (lhs.getDims() == rhs.getDims())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // Greater than or equal to  operator
+    bool operator>=(const Point &lhs, const Point &rhs)
+    {
+        if (lhs.getDims() > rhs.getDims())
+        {
+            return true;
+        }
+        else if (lhs.getDims() == rhs.getDims())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // Addition assignment operator
+    Point &operator+=(Point &lhs, const Point &rhs)
+    {
+        for (int i = 0; i < lhs.getDims(); i++)
+        {
+            lhs.setValue(i, lhs.getValue(i) + rhs.getValue(i));
+        }
+        return lhs;
+    }
+
+    // Subtraction assignment operator
+    Point &operator-=(Point &lhs, const Point &rhs)
+    {
+        for (int i = 0; i < lhs.getDims(); i++)
+        {
+            lhs.setValue(i, lhs.getValue(i) - rhs.getValue(i));
+        }
+        return lhs;
+    }
+
+    // Addition operator
+    const Point operator+(const Point &lhs, const Point &rhs)
+    {
+        Point addit(lhs.getDims());
+
+        for (int i = 0; i < lhs.getDims(); i++)
+        {
+            addit.values[i] = lhs.values[i] + rhs.values[i];
+        }
+        return addit;
+    }
+
+    // Subtraction operator
+    const Point operator-(const Point &lhs, const Point &rhs)
+    {
+        Point subtra(lhs.getDims());
+
+        for (int i = 0; i < lhs.getDims(); i++)
+        {
+            subtra.values[i] = lhs.values[i] - rhs.values[i];
+        }
+        return subtra;
+    }
+
+    std::ostream &operator<<(std::ostream &, const Point &point)
+    {
+        cout << "Your values are:";
+        for (int i = 0; i < point.getDims(); i++)
+            cout << " " << point.values[i];
+
+        cout << endl << "Your dimensions are: " << point.getDims();
+    }
+
+    std::istream &operator>>(istream &iStream, Point &point)
+    {
+        for (int i = 0; i < point.getDims(); i++)
+        {
+            iStream >> point.values[i];
+        }
+        return iStream;
+    }
 }
