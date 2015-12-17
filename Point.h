@@ -1,31 +1,26 @@
-//
-// John-Marc Cloer
-//
-
-#ifndef PA2_POINT_H
-#define PA2_POINT_H
+#ifndef CLUSTERING_POINT_H
+#define CLUSTERING_POINT_H
 
 #include <iostream>
 
 namespace Clustering {
 
     class Point {
-
-    private:                    // Declaring Private as a reminder
-        int dim;                // number of dimensions of the point
-        double *values;         // values of the point's dimensions
+        int dim;        // number of dimensions of the point
+        double *values; // values of the point's dimensions
 
     public:
+        static const char POINT_VALUE_DELIM;
+
         Point(int);
         Point(int, double *);
 
-        // Big Three:
-        Point(const Point &);                   //Copy Constructor
-        Point &operator=(const Point &);        //Assignment operator
-        ~Point();                               //Destructor
+        // Big three: cpy ctor, overloaded operator=, dtor
+        Point(const Point &);
+        Point &operator=(const Point &);
+        ~Point();
 
-        // Accessors & Mutators
-        void pointToConsole();
+        // Accessors & mutators
         int getDims() const { return dim; }
         void setValue(int, double);
         double getValue(int) const;
@@ -35,14 +30,14 @@ namespace Clustering {
 
         // Overloaded operators
 
-        //Members
+        // Members
         Point &operator*=(double);
         Point &operator/=(double);
-        const Point operator*(double) const;
+        const Point operator*(double) const; // prevent (p1*2) = p2;
         const Point operator/(double) const;
 
-        //1-based index!
-        double& operator[](int index);
+        // Note: 1-based index!
+        double &operator[](int index) { return values[index - 1]; } // TODO out-of-bds?
 
         // Friends
         friend Point &operator+=(Point &, const Point &);
@@ -61,7 +56,6 @@ namespace Clustering {
         friend std::ostream &operator<<(std::ostream &, const Point &);
         friend std::istream &operator>>(std::istream &, Point &);
     };
+
 }
-
-
-#endif //PA2_POINT_H
+#endif //CLUSTERING_POINT_H
