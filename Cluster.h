@@ -16,19 +16,34 @@ namespace Clustering
     // Node for a singly-linked List
     struct LNode
     {
-        PointPtr p;             //This is to be the m_Head according to the instructions
-        LNodePtr next;     //Used next becaus that's what we did in data structures
+        PointPtr p;        //This is to be the m_Head according to the instructions
+        LNodePtr next;
     };
 
     class Cluster {
 
     private:
-        int size;                // Size of the Cluster
+        int size;             // Size of the Cluster
         LNodePtr m_Head;      // Pointer to the Linked List m_Head node
-
+        int dimensions;       // Dimensions of the points
+        bool valid;           // Is it valid?
+        int __id;             // Id's!
+        Point __centroid;     // Point Centroids
     public:
+        //Move Class
+        class Move {
+        private:
+            Cluster *_from;
+            Cluster *_to;
+            PointPtr point;
+        public:
+            Move(const PointPtr &ptr, Cluster *from, Cluster *to) : _from(from), _to(to), point(ptr) {};
+            void perform();
+        };
+
         // Default Constructor
         Cluster();
+        Cluster(int);
 
         // Overload Big Three:
         Cluster(const Cluster &);                   //Copy Constructor
@@ -36,12 +51,33 @@ namespace Clustering
         ~Cluster();                                 //Destructor
 
         // Set functions
-        void add(const PointPtr &);                 //Adder
-        const PointPtr &remove(const PointPtr &);   //Remover
+        void add(const PointPtr &);                 // Adder
+        const PointPtr &remove(const PointPtr &);   // Remover
+        void removeAfter(LNodePtr lastNode);         // Removes lastNode->next
+        void clear();                               // deletes a cluster
+        void setCent(const Point &p) {__centroid = p; valid = true;}
+        void compCent();                            // computes the centroid
+        void setValid(bool isValid) {valid = isValid;}   // sets validity of a cluster
+        static int idGen();                         // cluster id's!
+
+
 
         //Get Functions
-        int getSize() const {return size;};         //Get Size
+        int getSize() const {return size;};             //Get Size
         LNodePtr getm_Head() const {return m_Head;};    //Get m_Head
+        Point getCent() const {return __centroid;}      //Get Centroid
+        bool isCentValid() const {return valid;}        //Centroid Validity Checker
+        int getId() const {return __id;}                //Get id
+        void pickPoints(unsigned int k,  Point**);            //Chooses points for initial centroids
+        double twoClusDist() const;                     //The distance between two centroids
+        friend double twoClusDist(const Cluster &, const Cluster &); //The distance between points of two different clusters
+        int getClusPairs();                             //The number of pairs in a cluster
+        friend double twoClusPairs(const Cluster &, const Cluster &);    //The number of pairs in two clusters
+
+        //Find Functions
+        const LNodePtr findPointPtr(const PointPtr) const;      //Finds PointPtr
+        bool contains(const PointPtr &ptr) const;               //Finds if PointPtr is inside
+        const LNodePtr findPoint(Point) const;                  //Finds a point
 
 
         //Overloaded Operators
