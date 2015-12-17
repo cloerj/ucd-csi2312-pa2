@@ -95,10 +95,10 @@ namespace Clustering {
     // distanceTo Function
     double Point::distanceTo(const Point &comparedPoint) const {
         double distanceTo;
-        distanceTo = 1;
+        distanceTo = 0;
 
         for (int i = 0; i < dim; i++) {
-            distanceTo = comparedPoint.getValue(i) - values[i];
+            distanceTo = 2 * (comparedPoint.getValue(i) - values[i]);
             return distanceTo;
         }
         return sqrt(distanceTo);
@@ -162,9 +162,12 @@ namespace Clustering {
         {
             return true;
         }
-        else
+        for (int i = 0; i < rhs.getDims(); i++)
         {
-            return false;
+            if (lhs.getValue(i) == rhs.getValue(i))
+            {
+                return true;
+            }
         }
     }
 
